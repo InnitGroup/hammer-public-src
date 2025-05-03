@@ -1,0 +1,51 @@
+import os
+import redis.asyncio as redis_aio
+import redis as redis_sync
+import pytz
+from apscheduler.jobstores.redis import RedisJobStore
+
+redis_host = os.environ.get("REDIS_HOST") or "127.0.0.1"
+redis_host_port = os.environ.get("REDIS_PORT") or 6379
+redis_host_db = os.environ.get("REDIS_DB") or 0
+
+class Config():
+    BaseDomain : str = "hammer.rip"
+    BaseURL : str = f"https://www.{BaseDomain}"
+
+    FLASK_SESSION_KEY : str = os.environ.get("FLASK_SESSION_KEY") or "FLASK_SESSION_KEY"
+    CURSOR_SALT : str = os.environ.get("CURSOR_SALT") or "CURSOR_SALT"
+    SQLALCHEMY_DATABASE_URI : str = os.environ.get("SQLALCHEMY_DATABASE_URI") or "postgresql://user:password@localhost:5432/hammerdb"
+    FLASK_LIMITED_STORAGE_URI : str = f"redis://{ redis_host }:{ str( redis_host_port ) }/{ str( redis_host_db ) }"
+
+    SCHEDULER_JOBSTORES = {
+        'default': RedisJobStore(host=redis_host, port=redis_host_port, db=redis_host_db)
+    }
+    SCHEDULER_TIMEZONE : pytz.timezone = pytz.utc
+
+    AIO_REDIS_CLIENT = redis_aio.Redis(host=redis_host, port=redis_host_port, db=redis_host_db, decode_responses=True)
+    SYNC_REDIS_CLIENT = redis_sync.Redis(host=redis_host, port=redis_host_port, db=redis_host_db, decode_responses=True)
+
+    CDN_URL : str = f"https://cdn.{BaseDomain}"
+    AMAZON_S3_BUCKET_NAME : str = "cdn.hammer.rip"
+    AMAZON_S3_ACCESS_KEY : str = ""
+    AMAZON_S3_SECRET_KEY : str = ""
+    AMAZON_S3_REGION : str = ""
+
+    SPUR_US_API_KEY : str = ""
+    SPUR_US_PUBLIC_SITE_TOKEN : str = ""
+    
+    GAMESERVER_COMM_PRIVATE_KEY_LOCATION : str = "./keys/rsa_private_gameserver.pem"
+    RSA_PRIVATE_KEY_PATH : str = "./keys/rsa_private_1024.pem"
+    RSA_PRIVATE_KEY_PATH2 : str = "./keys/rsa_private_2048.pem"
+
+    SMTP_SERVER_ADDRESS : str = ""
+    SMTP_NO_REPLY_SENDER_NAME : str = ""
+    SMTP_NO_REPLY_SENDER : str = ""
+    SMTP_NO_REPLY_PASSWORD : str = ""
+    EMAIL_TEMPLATES_DIR : str = "./app/files/email_templates"
+    EMAIL_WEBSITE_DISPLAY_NAME : str = "hammer.rip"
+    EMAIL_WEBSITE_DISPLAY_NAME_CAPITAL : str = "Hammer"
+    
+    CACHE_STATIC_FILE_HASHES : bool = False
+    
+    

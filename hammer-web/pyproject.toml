@@ -1,0 +1,7 @@
+[project]
+name = "hammer-web"
+description = "The backend for hammer.rip a Roblox Private Server"
+requires-python = ">= 3.10"
+
+[tool.pylint.main]
+load-plugins = "pylint_actions"

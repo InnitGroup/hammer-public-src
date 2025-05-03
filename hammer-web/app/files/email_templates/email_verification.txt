@@ -1,0 +1,11 @@
+Dear {website_display_name} user,
+
+We are pleased that you have chosen to secure your {user_name} account by providing an email address.
+
+By verifying the email address associated with your {website_display_name_capital} account, you enable a higher level of account security.
+
+Please click the link below to complete the verification process. The following link will expire after 2 hours.
+
+{email_verification_link}
+
+{website_display_name} staff

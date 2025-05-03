@@ -1,0 +1,25 @@
+from enums.ProcessYear import ProcessYear
+
+class ServerConfig():
+    base_domain = "hammer.rip"
+    arbiter_port : int = 3000
+    server_executable_paths : dict[ ProcessYear, str ] = {
+        ProcessYear.TwentyOne : "./server_executables/RCCService2021/RCCService.exe"
+    }
+    prelaunch_instances_per_year : dict[ ProcessYear, int ] = {
+        ProcessYear.TwentyOne : 1
+    }
+    
+    rcc_soap_port_range = range( 64989, 65200 )
+    rcc_gameserver_port_range = range( 53640, 53900 )
+    thumbnail_max_queue_size : int = 150
+    thumbnail_render_workers : int = 1
+    
+    """
+        The offset will be added to the assigned port number, so the first port will be 53640 + 400 = 54040
+        54040 will be the first port assigned to the first game server while 53640 will be assigned to the quilkin proxy
+    """
+    is_quilkin_enabled : bool = True
+    quilkin_port_offset = 400
+    
+    log_file_path : str = "./logs/"

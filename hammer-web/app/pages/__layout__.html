@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="en">
+    <head>
+<!--[if IE 6]>
+  © COPYRIGHT 2025 HAMMER.RIP
+  DO NOT COPY, MODIFY, OR REDISTRIBUTE THIS CODE
+  WITHOUT PERMISSION FROM HAMMER.RIP
+
+  PAGE GENERATED AT : {{ datetime_utcnow() }} UTC
+<![endif]-->
+
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width">
+        <meta name="robots" content="noindex">
+        <title>{% block title %}{% endblock %} - Hammer</title>
+        <link rel="stylesheet" href="{{url_for('static',filename='dist/css/tailwind-build.css', _scheme = 'https')}}">
+        <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.14.0/cdn/themes/light.css" />
+        <script type="importmap">
+{
+    "imports": {
+    "three": "{{url_for('static',filename='js/three/three.module.min.js', _scheme = 'https')}}",
+    "mtl-loader": "{{url_for('static',filename='js/three/MTLLoader.js', _scheme = 'https')}}",
+    "obj-loader": "{{url_for('static',filename='js/three/OBJLoader.js', _scheme = 'https')}}",
+    "orbit-controls": "{{url_for('static',filename='js/three/OrbitControls.js', _scheme = 'https')}}",
+    "tween": "{{url_for('static',filename='js/tween.js', _scheme = 'https')}}",
+    "hammer_3d_renderer": "{{url_for('static',filename='js/3d_renderer.js', _scheme = 'https')}}"
+    }
+}
+        </script>
+        <script type="module" src="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.14.0/cdn/shoelace-autoloader.js"></script>
+        <script src="{{url_for('static',filename='js/global.js', _scheme = 'https')}}"></script>
+        <style>
+            .dropdown-logout-button::part( base ) {
+                color : #ef4444;
+                font-weight: 600;
+            }
+            .dropdown-toggle-gear-button::part( base ):hover {
+                color : #fff;
+            }
+            #navbar-settings-dropdown-container::part( panel ) {
+                border-width: 1px;
+                border-color: #d4d4d4;
+            }
+
+            .confirmation-dialog::part( title ) {
+                padding-bottom: 0px;
+                font-weight: 600;
+            }
+            .confirmation-dialog::part( body ) {
+                padding-top: .5rem;
+            }
+
+            :not(:defined) {
+                visibility: hidden;
+            }
+        </style>
+        <sl-dialog class="dialog-overview hidden confirmation-dialog" id = "confirmation-dialog-container-template" label="Title">
+            <div class="dialog-body-text"></div>
+            <div class="flex items-center justify-end mt-2">
+                <button slot="footer" class="bg-gray-500 px-3 p-1 rounded-md text-gray-100 font-semibold shadow-md hover:bg-gray-600 me-1 cancel-confirmation-button">Cancel</button>
+                <button slot="footer" class="bg-rose-600 px-3 p-1 rounded-md text-white font-semibold shadow-md hover:bg-rose-700 me-1 confirm-confirmation-button">Confirm <i class="confirm-btn-icon bi"></i></button>
+            </div>
+        </sl-dialog>
+        {% if current_user %}
+        <div id="authenticated-user-info" data-username="{{ current_user.username }}" data-userid="{{ current_user.id }}"></div>
+        {% endif %}
+        {% block head %}
+        {% endblock %}
+    </head>
+    <body class="bg-gray-200" data-csrf-token="{{ csrf_token() }}" data-endpoint-lookup-url="{{ url_for('web_api._endpoints_lookup', _scheme = 'https' ) }}">
+        {% if current_user != None %}
+        <div class="shadow-md fixed w-full" id="global-navbar" style="z-index: 10;">
+            <div class="bg-indigo-700 shadow-md text-white p-4">
+                <div class="max-w-[1200px] flex items-center ms-auto me-auto">
+                    <div class="flex items-center w-full relative">
+                        <a href="{{ url_for('pages.HomeHandler._home_page', _scheme = 'https') }}" class="text-3xl font-semibold">hammer</a>
+                        <div class="text-gray-200 hidden lg:block">
+                            <a href="/games" class="text-sm font-semibold ms-4">Games</a>
+                            <a href="/catalog" class="text-sm font-semibold ms-4">Catalog</a>
+                            <a href="/develop" class="text-sm font-semibold ms-4">Develop</a>
+                        </div>
+                        <div class = "ms-auto me-auto hidden md:block absolute top-[50%] left-[50%] transform -translate-x-1/2 -translate-y-1/2">
+                            <input type="text" class="rounded-md p-1 w-[300px] text-gray-700 shadow-md border-gray-300 border focus:outline-none focus:shadow-outline focus:border-indigo-500 py-2 px-3 leading-tight" placeholder="Search">
+                        </div>
+                        <div class="flex items ms-auto">
+                            <a href="{{ url_for('user_profile_handler._profile_page', _scheme='https', userId = current_user.id ) }}" class="flex items-center ms-4">
+                                <img src="{{ url_for('thumbnails_roblox._headshot_avatar', _scheme='https', userId = current_user.id, format = 'webp', x = 48, y = 48 ) }}" width="30px" height="30px" class="rounded-full shadow-md border-indigo-500 border bg-white"/>
+                                <p class="ms-2 font-semibold">{{ current_user.username }}</p>
+                            </a>
+                            <sl-dropdown placement="bottom-end" id="navbar-settings-dropdown-container" class="hidden">
+                                <sl-icon-button name="gear" slot="trigger" class="text-white text-lg hover:text-white dropdown-toggle-gear-button" label="settings"></sl-icon-button>
+                                <sl-menu class="hidden" id = "navbar-dropdown-menu-settings" class="border">
+                                    <sl-menu-item>Settings</sl-menu-item>
+                                    <sl-menu-item>Membership</sl-menu-item>
+                                    <sl-menu-item>Redeem Giftcard</sl-menu-item>
+                                    <sl-divider style="height: 1px;background-color: rgb(230,230,230);"></sl-divider>
+                                    <sl-menu-item class="dropdown-logout-button" id="logout-button">Logout <i class="bi bi-box-arrow-right"></i></sl-menu-item>
+                                </sl-menu>
+                            </sl-dropdown>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="w-full flex items-center justify-center bg-indigo-500 p-1 shadow-inner">
+                <div class="hidden lg:block w-full max-w-[1200px] px-2 xl:px-0">
+                    <div class="justify-start flex items-center text-gray-200 font-normal text-xs">
+                        <a href="{{ url_for('user_profile_handler._profile_page', _scheme='https', userId = current_user.id ) }}">Profile</a>
+                        <a href="/friends" class="ms-4">Friends</a>
+                        <a href="{{ url_for('avatar_page_editor._avatar_editor_page', _scheme='https')}}" class="ms-4">Avatar</a>
+                        <a href="/messages" class="ms-4">Messages</a>
+                        <a href="/groups" class="ms-4">Groups</a>
+                        <a href="/trades" class="ms-4">Trades</a>
+                        <a href="/downloads" class="ms-4">Downloads</a>
+                        <a href="/discord" class="ms-4">Discord</a>
+                        {% if current_user.permissions > 0 %}
+                        <a href="{{ url_for('pages.admin._main', _scheme = 'https') }}" class="ms-4">Admin Panel</a>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="block lg:hidden w-full max-w-[1200px] px-2 xl:px-0">
+                    <div class="flex items-center text-gray-200 font-normal text-xs justify-start">
+                        <a href="{{ url_for('pages.HomeHandler._home_page', _scheme = 'https') }}">Home</a>
+                        <a href="/games" class="ms-4">Games</a>
+                        <a href="/catalog" class="ms-4">Catalog</a>
+                        <a href="/develop" class="ms-4">Develop</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        <div class="min-h-screen{% if current_user != None %} pt-[100px]{% endif %}">
+            {% block content %}{% endblock %}
+            <div class="fixed inset-0 bg-gray-900 bg-opacity-50 hidden z-20" id="loading-container">
+                <div class="flex items-center justify-center h-screen">
+                    <div class="bg-white rounded-md p-8 border shadow-md border-gray-300">
+                        <div class="flex items-center justify-center">
+                            <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-500"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

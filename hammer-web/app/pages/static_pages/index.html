@@ -1,0 +1,21 @@
+{% extends '__layout__.html' %}
+{% block title %}Welcome{% endblock %}
+{% block head %}
+{% endblock %}
+{% block content %}
+<div class="flex items-center justify-center h-screen">
+    <div class="w-full max-w-xs">
+        <div class="bg-white rounded-md px-6 pt-4 pb-4 mb-2 border shadow-md border-gray-300 text-start" >
+            <h1 class="text-4xl font-semibold italic drop-shadow-md">hammer</h1>
+            <p class="text-gray-700 text-xs italic mb-2">where would you like to go today?</p>
+            <div class="flex items-center justify-center">
+                <button class="bg-indigo-600 w-1/2 p-1 rounded-md text-white font-semibold drop-shadow-md hover:bg-indigo-700 me-1" id="login-button" onclick="window.location.href='/login'"><i class="bi bi-box-arrow-in-right"></i> Login</button>
+                <button class="bg-rose-600 w-1/2 p-1 rounded-md text-white font-semibold drop-shadow-md hover:bg-rose-700 ms-1" id="register-button" onclick="window.location.href='/register'"><i class="bi bi-person-plus"></i> Register</button>
+            </div>
+        </div>
+        <p class="text-center text-gray-500 text-xs italic">
+            &copy;2025 hammer. All rights reserved.
+        </p>
+    </div>
+</div>
+{% endblock %}

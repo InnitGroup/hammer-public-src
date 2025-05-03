@@ -1,0 +1,46 @@
+{% extends '__layout__.html' %}
+{% block title %}Admin{% endblock %}
+{% block head %}
+{% endblock %}
+{% block content %}
+<div class="flex justify-center">
+    <div class="w-full max-w-[1200px] mx-auto">
+        <a href="{{ url_for('pages.admin._main', _scheme = 'https') }}" class="btn btn-primary"><i class="bi bi-arrow-left"></i> Return to Admin Homepage</a>
+        <div class="border-b border-gray-400 my-2"></div>
+        <div class="flex items-center justify-between">
+            <h2 class="text-3xl font-semibold">Gameserver Manager</h2>
+            <div>
+                <sl-button id="add-gameserver-button" variant="primary">Add Gameserver <i class="bi bi-database-add"></i></sl-button>
+            </div>
+        </div>
+        <div class="border-b border-gray-400 my-2"></div>
+        {% for gameserver in all_gameservers %}
+        <div class="border border-gray-400 bg-white p-3 w-full rounded-md mb-3">
+            <div class="flex justify-between">
+                <div>
+                    <h3 class="text-2xl font-semibold">{{ gameserver.name }}</h3>
+                    <p class="text-gray-500 m-0 text-sm">{{ gameserver.id }}</p>
+                </div>
+                <div class="flex gap-3">
+                    <div>
+                        <p class="text-gray-500 m-0 text-sm">CPU Usage: <span class="text-black">{{ round( gameserver.processor_usage, 2 ) }}%</span></p>
+                        <p class="text-gray-500 m-0 text-sm">CPU Cores: <span class="text-black">{{ gameserver.processor_cores }}</span></p>
+                        <p class="text-gray-500 m-0 text-sm">Memory usage: <span class="text-black">{{ round( gameserver.memory_usage ) }}MB / {{round( gameserver.memory_size )}}MB</span></p>
+                    </div>
+                    <div>
+                        <p class="text-gray-500 m-0 text-sm">Response time: <span class="text-black">{{ round( gameserver.response_time, 3 ) }} secs</span></p>
+                        <p class="text-gray-500 m-0 text-sm">Thumbnail Queue: <span class="text-black">{{ gameserver.thumbnail_queue_size }}</span></p>
+                        <p class="text-gray-500 m-0 text-sm">Last Heartbeat: <span class="text-black">{{ gameserver.last_heartbeat.strftime('%b %d %H:%M:%S UTC') }}</span></p>
+                    </div>
+                    <div>
+                        <p class="text-gray-500 m-0 text-sm">Thumbnail Renderer: <span class="text-black">{{ gameserver.is_thumbnail_renderer }}</span></p>
+                        <p class="text-gray-500 m-0 text-sm">Game Hoster: <span class="text-black">{{ gameserver.is_game_hoster }}</span></p>
+                        <p class="text-gray-500 m-0 text-sm">Asset Validator: <span class="text-black">{{ gameserver.is_asset_validator }}</span></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,137 @@
+{% extends '__layout__.html' %}
+{% block title %}{{userObj.username}}{% endblock %}
+{% block head %}
+<script src="{{url_for('static',filename='js/profile_page.js', _scheme = 'https')}}" type="module"></script>
+{% endblock %}
+{% block content %}
+<div class="flex justify-center">
+    <div class="max-w-[800px] w-screen mb-4 max-sm:px-2" id="user-profile-container" data-profile-userid="{{userObj.id}}">
+        <div class = "w-full mt-6 bg-white drop-shadow-md rounded-md px-8 py-6">
+            <div class="flex">
+                <div class="w-[100px] aspect-square relative">
+                    <img src="{{ url_for('thumbnails_roblox._headshot_avatar', _scheme='https', userId = userObj.id, format = 'webp', x = 100, y = 100 ) }}" width="100px" height="100px" class="rounded-full shadow-md border-gray-300 border" style="background-color: #d4d4d4;" alt="{{userObj.username}} Profile Picture"/>
+                    {% if is_user_online %}
+                    <div class = "absolute bottom-[2px] right-[2px] w-[28px] h-[28px] rounded-full flex items-center justify-center {% if is_user_ingame %}bg-green-500{%else%}bg-sky-500{%endif%}">
+                        {% if is_user_ingame %}<i class="bi bi-controller text-white"></i>{%else%}<i class="bi bi-person text-white"></i>{%endif%}
+                    </div>
+                    {% endif %}
+                </div>
+                <div class="ms-3">
+                    <h1 class="max-sm:text-2xl sm:text-4xl font-semibold">{{ userObj.username }}</h1>
+                    <div class="flex items-center">
+                        <div class="py-1 ps-0 pe-2">
+                            <h5 class="text-xs font-semibold text-gray-500 text-center w-full">Friends</h5>
+                            <p class="text-xl font-semibold m-0 text-center w-full text-gray-800">{{FriendCount}}</p>
+                        </div>
+                        <div class="p-1 px-2">
+                            <h5 class="text-xs font-semibold text-gray-500 text-center w-full">Followers</h5>
+                            <p class="text-xl font-semibold m-0 text-center w-full text-gray-800">0</p>
+                        </div>
+                        <div class="p-1 px-2">
+                            <h5 class="text-xs font-semibold text-gray-500 text-center w-full">Following</h5>
+                            <p class="text-xl font-semibold m-0 text-center w-full text-gray-800">0</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="ms-auto min-h-[100px]">
+                    <sl-dropdown placement="bottom-end" style="display: flex;justify-content: right;">
+                        <sl-icon-button slot="trigger" name="three-dots-vertical" label="User Actions Menu" class="ms-auto"></sl-icon-button>
+                        <sl-menu class="border shadow-lg">
+                          <sl-menu-item>Inventory</sl-menu-item>
+                          {% if current_user.id != userObj.id %}
+                          <sl-menu-item id="follow-relationship-action-btn" style="display: none;">Follow</sl-menu-item>
+                          <sl-menu-item>Trade</sl-menu-item>
+                          {% endif %}
+                        </sl-menu>
+                    </sl-dropdown>
+                    {% if current_user.id != userObj.id %}
+                    <div class="flex items-center mt-5 max-sm:hidden">
+                        <sl-button outline>Message</sl-button>
+                        <sl-button class="ms-1" id="friend-relationship-action-btn" style="display: none;" outline>Add Friend</sl-button>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            <hr class="my-3 h-[1px] border-t-0 bg-gray-300" />
+            <h2 class="text-2xl font-semibold m-0">About</h2>
+            <div class="p-1 text-gray-800 font-semibold text-sm">
+                {% for desc_line in userObj.description.split('\n') %}
+                <p class="m-0 mb-1">{{desc_line}}</p>
+                {% endfor %}
+            </div>
+        </div>
+        <div class = "w-full mt-3 bg-white drop-shadow-md rounded-md p-6">
+            <div class="sm:grid sm:grid-cols-2 gap-2">
+                <div class="sm:flex flex-col items-center border-gray-300 border rounded-md relative overflow-hidden" style="background-color: #d4d4d4;">
+                    <img id="avatar-preview-2d-thumb" src="{{ url_for('thumbnails_roblox._fullbody_avatar', _scheme='https', userId = userObj.id, format = 'webp', x = 500, y = 500 ) }}" class="w-full aspect-square" alt="{{userObj.username}} Avatar"/>
+                    <div id="avatar-preview-3d-container" class="hammer-3d-render-container w-full aspect-square relative"  data-render-type="user_avatar" data-user-id="{{userObj.id}}" style="display: none;">
+                        <div class="inset-0 bg-gray-900 bg-opacity-50 absolute w-full h-full flex justify-center items-center" id="avatar-preview-3d-loading-container">
+                            <div class="flex items-center justify-center">
+                                <div class="bg-white rounded-md p-8 border shadow-md border-gray-300">
+                                    <div class="flex items-center justify-center">
+                                        <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-500"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <sl-button class="absolute top-[5px] right-[5px] rounded-md p-2 font-semibold" id="avatar-preview-selector-btn">3D</sl-button>
+                </div>
+                <div class="sm:flex flex-col items-center border rounded-md shadow-lg p-2 sm:aspect-square sm:w-full max-sm:mt-2">
+                    {% if len(WearingItems) == 0 %}
+                    <p class="text-gray-800 font-semibold m-auto text-sm">This user does not have any accessories equipped</p>
+                    {% else %}
+                    <div class="grid grid-cols-4 gap-2 w-full h-full">
+                        {% for avatar_item in WearingItems %}
+                        <a class="flex flex-col border border-gray-400 rounded-md aspect-square overflow-hidden shadow-md p-1" href="/catalog/{{avatar_item.asset_id}}/--" style="background-color: #d4d4d4;">
+                            <img src="{{ url_for('thumbnails_roblox._asset_thumbnail', _scheme='https', assetId = avatar_item.asset_id, format = 'webp', x = 100, y = 100 ) }}" class="drop-shadow-md"/>
+                        </a>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class = "w-full mt-3 bg-white drop-shadow-md rounded-md px-6 py-3 min-h-[150px]">
+            <div class="flex items-center">
+                <h2 class="text-2xl font-semibold m-0">Friends ({{FriendCount}})</h2>
+                <a href="/friends" class="text-indigo-500 hover:text-indigo-700 ms-auto font-semibold">View All <i class="bi bi-arrow-right"></i></a>
+            </div>
+            <div class="grid max-sm:grid-cols-4 sm:grid-cols-8 gap-2 mt-2 ">
+                {% for friend in UserFriends %}
+                <div class="flex items-center min-h-[90px]">
+                    <a class="no-underline" href="{{ url_for('user_profile_handler._profile_page', _scheme='https', userId = friend.id ) }}">
+                        <div class="w-[90px] h-full p-1">
+                            <div class="rounded-full w-full aspect-square shadow-md border-gray-300 border relative" style="background-color: #d4d4d4;">
+                                <img src="{{ url_for('thumbnails_roblox._headshot_avatar', _scheme='https', userId = friend.id, format = 'webp', x = 100, y = 100 ) }}" class="rounded-full w-full aspect-square drop-shadow-md"/>
+                                {% if friend.is_online %}
+                                <div class = "absolute bottom-[2px] right-[2px] w-[20px] h-[20px] rounded-full flex items-center justify-center {% if friend.is_ingame %}bg-green-500{%else%}bg-sky-500{%endif%}">
+                                    {% if friend.is_ingame %}<i class="bi bi-controller text-white text-sm"></i>{%else%}<i class="bi bi-person text-white text-sm"></i>{%endif%}
+                                </div>
+                                {% endif %}
+                            </div>
+                            <h5 class="text-center text-xs font-normal tracking-tight m-0 mt-1 truncate w-full">{{friend.username}}</h5>
+                        </div>
+                    </a>
+                </div>
+                {% endfor %}
+            </div>
+            {% if len(UserFriends) == 0 %}
+                <p class="text-gray-800 font-semibold mt-4 text-sm text-center">This user does not have any friends</p>
+            {% endif %}
+        </div>
+        <div class = "w-full mt-3 bg-white drop-shadow-md rounded-md px-6 py-3">
+            <div class="flex items-center">
+                <div class="py-1 ps-0 pe-2 mx-auto">
+                    <h5 class="text-xs font-semibold text-gray-500 text-center w-full">Join Date</h5>
+                    <p class="text-xl font-semibold m-0 text-center w-full text-gray-800">{{user_join_date}}</p>
+                </div>
+                <div class="py-1 ps-0 pe-2 mx-auto">
+                    <h5 class="text-xs font-semibold text-gray-500 text-center w-full">Place Visits</h5>
+                    <p class="text-xl font-semibold m-0 text-center w-full text-gray-800"><sl-format-number value="9999999"></sl-format-number></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

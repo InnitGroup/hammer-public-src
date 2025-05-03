@@ -1,0 +1,8 @@
+quart
+zstd
+aiohttp
+psutil
+xmltodict
+pillow
+cryptography
+requests

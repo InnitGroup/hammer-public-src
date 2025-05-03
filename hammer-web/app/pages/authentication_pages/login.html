@@ -1,0 +1,52 @@
+{% extends '__layout__.html' %}
+{% block title %}Login{% endblock %}
+{% block head %}
+<script src="{{url_for('static',filename='js/login_page_handler.js', _scheme = 'https')}}"></script>
+{% endblock %}
+{% block content %}
+<div class="flex items-center justify-center h-screen">
+    <div class="w-full max-w-xs">
+        <h1 class="text-4xl font-semibold text-center mb-4 italic drop-shadow-md">hammer</h1>
+        <div class="bg-white rounded-md px-8 pt-6 pb-8 mb-2 border shadow-md border-gray-300" id = "login-container">
+            <div class="mb-2">
+                <label class="block text-gray-700 text-sm font-medium mb-1" for="username">
+                    Username
+                </label>
+                <input class="shadow-md appearance-none border border-gray-300 rounded-md w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-indigo-700" id="username" type="text" placeholder="Username">
+            </div>
+            <div class="mb-2">
+                <label class="block text-gray-700 text-sm font-medium mb-1" for="password">
+                    Password
+                </label>
+                <input class="shadow-md appearance-none border border-gray-300 rounded-md w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-indigo-700" id="password" type="password" placeholder="************">
+            </div>
+            <div class="flex items-center mb-3 px-1">
+                <label class="text-gray-700 text-xs font-medium mb-1" for="remember-session">
+                    <input type="checkbox" class="mr-1 leading-tight " id="remember-session">
+                    Remember me
+                </label>
+                <a href="/forgot" class="text-indigo-500 hover:text-indigo-700 text-xs ms-auto">Forgot password?</a>
+            </div>
+            <p class="text-red-500 text-xs w-full text-center mb-2 font-semibold hidden" id="login-error-text"></p>
+            <button class="bg-indigo-600 w-full p-1 rounded-md text-white font-semibold shadow-md hover:bg-indigo-700 disabled:bg-indigo-800" id="login-button">Sign in</button>
+            <p class="text-gray-700 text-xs w-full text-center mt-1">Don't have an account? <a href="/register" class="text-indigo-500 hover:text-indigo-700">Register</a></p>
+        </div>
+        <p class="text-center text-gray-500 text-xs italic">
+            &copy;2025 hammer. All rights reserved.
+        </p>
+    </div>
+</div>
+
+<div class="fixed inset-0 bg-gray-900 bg-opacity-50 hidden" id="two-factor-request-container">
+    <div class="flex items-center justify-center h-screen">
+        <div class="bg-white rounded-md p-6 border shadow-md border-gray-300">
+            <h3 class="text-2xl font-semibold text-center mb-2">Two Factor Authentication</h3>
+            <div class="mb-2">
+                <input class="shadow-md appearance-none border border-gray-300 rounded-md w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-indigo-700" id="two-factor-code" type="text" placeholder="123456">
+                <p class="text-red-500 text-xs w-full text-center mt-1 font-semibold hidden" id="two-factor-error-text">Error</p>
+            </div>
+            <button class="bg-indigo-600 w-full p-1 rounded-md text-white font-semibold shadow-md hover:bg-indigo-700" id="two-factor-button">Proceed</button>
+        </div>
+    </div>
+</div>
+{% endblock %}

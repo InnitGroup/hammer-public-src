@@ -1,0 +1,160 @@
+{% extends '__layout__.html' %}
+{% block title %}Avatar{% endblock %}
+{% block head %}
+<script src="{{url_for('static',filename='js/avatar_editor.js', _scheme = 'https')}}" type="module"></script>
+<div class="h-[140px] w-[100px] item-card-template" style="display: none;">
+    <img src="" class="item-card-thumbnail h-[100px] w-[100px] rounded-md border border-gray-400 hover:cursor-pointer hover:shadow-md transition duration-75" style="background-color: #d4d4d4;">
+    <a class="text-start text-xs tracking-tight no-underline w-full text-ellipsis block overflow-hidden item-card-name" href="/catalog/1/--" target="_blank"></a>
+</div>
+<div class="rounded-3xl border-gray-400 border w-[45px] aspect-square body-colour-template shadow-sm cursor-pointer" style="display: none;margin: 2px;"></div>
+<style>
+    #head-part {
+        width: 60px;
+    }
+</style>
+{% endblock %}
+{% block content %}
+<div class="flex justify-center">
+    <div class="max-w-[1000px] w-screen mb-4 max-sm:px-2 border-indigo-700" id="avatar-editor-container">
+        <div class="sm:grid grid-cols-3 gap-2">
+            <div class="col-span-1 bg-white rounded-md border border-gray-300 w-full aspect-square max-sm:mb-3 p-3 relative" id="avatar-preview-container">
+                <div class="absolute top-[20px] right-[20px]">
+                    <sl-button class="rounded-md me-1 font-semibold z-10" id="avatar-rig-type-btn">R6</sl-button>
+                    <sl-button class="rounded-md font-semibold z-10" id="avatar-preview-selector-btn">3D</sl-button>
+                </div>
+                <div id="avatar-preview-2d-holder" class="border border-gray-300 p-1 w-full aspect-square rounded-md relative" style="background-color: #d4d4d4;">
+                    <div class="inset-0 bg-gray-900 bg-opacity-50 absolute w-full h-full flex justify-center items-center" id="avatar-preview-2d-loading-container">
+                        <div class="flex items-center justify-center">
+                            <div class="bg-white rounded-md p-8 border shadow-md border-gray-300">
+                                <div class="flex items-center justify-center">
+                                    <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-500"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="avatar-preview-3d-holder" class="border border-gray-300 p-1 w-full aspect-square rounded-md relative" style="background-color: #d4d4d4; display: none;">
+                    <div class="inset-0 bg-gray-900 bg-opacity-50 absolute w-full h-full flex justify-center items-center" id="avatar-preview-3d-loading-container">
+                        <div class="flex items-center justify-center">
+                            <div class="bg-white rounded-md p-8 border shadow-md border-gray-300">
+                                <div class="flex items-center justify-center">
+                                    <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-500"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-span-2 h-full">
+                <div class="mb-2 bg-white rounded-md border border-gray-300 w-full p-2">
+                    <sl-select value="accessories" id="avatar-category-selector">
+                        <sl-option value="accessories">Accessories</sl-option>
+                        <sl-option value="scaling">Scaling</sl-option>
+                        <sl-option value="body-colours">Body Colours</sl-option>
+                        <sl-option value="emotes">Emotes</sl-option>
+                        <sl-option value="outfits">Outfits</sl-option>
+                    </sl-select>
+                </div>
+                <div id="avatar-accessories-container">
+                    <div class="mb-2 bg-white rounded-md border border-gray-300 w-full p-2">
+                        <sl-select value="8" id="item-type-selector">
+                            <sl-option value="8">Hats</sl-option>
+                            <sl-option value="18">Faces</sl-option>
+                            <sl-option value="2">T-Shirts</sl-option>
+                            <sl-option value="11">Shirts</sl-option>
+                            <sl-option value="12">Pants</sl-option>
+                            <sl-option value="19">Gear</sl-option>
+                            <sl-option value="41">Hair Accesory</sl-option>
+                            <sl-option value="42">Face Accessory</sl-option>
+                            <sl-option value="43">Shoulder Accessory</sl-option>
+                            <sl-option value="44">Neck Accessory</sl-option>
+                            <sl-option value="45">Front Accessory</sl-option>
+                            <sl-option value="46">Back Accessory</sl-option>
+                            <sl-option value="47">Waist Accessory</sl-option>
+                            <sl-option value="17">Head</sl-option>
+                            <sl-option value="27">Torso</sl-option>
+                            <sl-option value="29">Left Arms</sl-option>
+                            <sl-option value="28">Right Arms</sl-option>
+                            <sl-option value="30">Left Legs</sl-option>
+                            <sl-option value="31">Right Legs</sl-option>
+                        </sl-select>
+                        <div class="mt-2 min-h-[180px]">
+                            <div class="grid justify-items-center" id="items-owned-container" style="grid-template-columns: repeat(auto-fill,minmax(105px,1fr));">
+
+                            </div>
+                            <p class="text-center text-gray-600 text-sm w-full h-[150px] p-12" id="items-owned-status-message" style="display: none;">No items found</p>
+                            <div id="items-pagination-controls" class="flex justify-center mt-2 items-center">
+                                <sl-button size="small" id="items-pagination-prev" disabled>Previous</sl-button>
+                                <span class="mx-2 text-xs" id="items-pagination-current">Page 1</span>
+                                <sl-button size="small" id="items-pagination-next" disabled>Next</sl-button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-2 bg-white rounded-md border border-gray-300 w-full p-2">
+                        <h5 class="text-start text-md font-semibold">Equipped Accessories</h5>
+                        <div class="min-h-[140px] mt-2">
+                            <div class="grid justify-items-center" id="items-equipped-container" style="grid-template-columns: repeat(auto-fill,minmax(105px,1fr));">
+                            </div>
+                            <p class="text-center text-gray-600 text-sm w-full h-[150px] p-12" id="items-equipped-status-message" style="display: none;">No items equipped</p>
+                        </div>
+                    </div>
+                </div>
+                <div id="avatar-body-scaling-container" style="display: none;">
+                    <div class="mb-2 bg-white rounded-md border border-gray-300 w-full p-4">
+                        <div id="body-height-scaler">
+                            <div class="flex items-center">
+                                <h5 class="text-start text-sm font-semibold">Height</h5>
+                                <p class="m-0 ms-auto scaling-value text-sm">100%</p>
+                            </div>
+                            <sl-range class="scale-slider" min="0" max="100"></sl-range>
+                        </div>
+                        <div id="body-width-scaler">
+                            <div class="flex items-center">
+                                <h5 class="text-start text-sm font-semibold">Width</h5>
+                                <p class="m-0 ms-auto scaling-value text-sm">100%</p>
+                            </div>
+                            <sl-range class="scale-slider" min="0" max="100"></sl-range>
+                        </div>
+                        <div id="body-head-scaler">
+                            <div class="flex items-center">
+                                <h5 class="text-start text-sm font-semibold">Head</h5>
+                                <p class="m-0 ms-auto scaling-value text-sm">100%</p>
+                            </div>
+                            <sl-range class="scale-slider" min="0" max="100"></sl-range>
+                        </div>
+                        <div id="body-proportions-scaler">
+                            <div class="flex items-center">
+                                <h5 class="text-start text-sm font-semibold">Proportions</h5>
+                                <p class="m-0 ms-auto scaling-value text-sm">100%</p>
+                            </div>
+                            <sl-range class="scale-slider" min="0" max="100"></sl-range>
+                        </div>
+                    </div>
+                </div>
+                <div id="avatar-body-colours" style="display: none;">
+                    <div class="sm:flex gap-1 items-start w-full">
+                        <div class="mb-2 bg-white rounded-md border border-gray-300 max-sm:w-full sm:w-[260px] min-h-[340px] p-2 min-w-fit sm:float-left">
+                            <div class="h-[330px] relative">
+                                <div class="w-[60px] border border-gray-400 h-[60px] rounded-md cursor-pointer my-0 mx-auto block" id="head-part"></div>
+                                <div class="w-[120px] border border-gray-400 h-[120px] rounded-md cursor-pointer mt-[10px] block my-0 mx-auto" id="torso-part">
+                                    <div id="right-arm-part" class="w-[50px] border border-gray-400 cursor-pointer h-[120px] my-0 mx-auto block z-10 ms-[-60px] rounded-md"></div>
+                                    <div id="left-arm-part" class="w-[50px] border border-gray-400 cursor-pointer h-[120px] my-0 mx-auto block ms-[130px] mt-[-120px] rounded-md"></div>
+                                </div>
+                                <div id="legs-group" class="w-[120px] h-full mt-[10px] mr-auto mb-0 ml-auto">
+                                    <div id="right-leg-part" class="float-left w-[calc(50%-10px)] border border-gray-400 cursor-pointer h-[120px] mr-[10px] rounded-md"></div>
+                                    <div id="left-leg-part" class="float-right w-[calc(50%-10px)] border border-gray-400 cursor-pointer h-[120px] ml-[10px] rounded-md"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mb-2 bg-white rounded-md border border-gray-300 p-2 max-sm:w-full sm:min-w-[250px] sm:flex-grow" id="body-colours-popup-container" style="display: none;">
+                            <h5 class="text-start text-sm font-semibold" id="body-colour-part-name-text"></h5>
+                            <div class="grid justify-items-center" id="body-colours-selector-container" style="grid-template-columns: repeat(auto-fill,minmax(50px,1fr));">
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

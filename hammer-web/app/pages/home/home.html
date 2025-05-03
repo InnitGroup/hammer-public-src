@@ -1,0 +1,66 @@
+{% extends '__layout__.html' %}
+{% block title %}Home{% endblock %}
+{% block head %}
+{% endblock %}
+{% block content %}
+<div class="flex justify-center">
+    <div class = "max-w-[1200px] mt-6 w-screen max-[1200px]:px-2">
+        <div class="flex items-center">
+            <a href="/users/{{ current_user.id }}/profile" class="no-underline">
+                <img src="{{ url_for('thumbnails_roblox._headshot_avatar', _scheme='https', userId = current_user.id, format = 'webp', x = 120, y = 120 ) }}" width="120px" height="120px" class="rounded-full shadow-md border-gray-300 border" style="background-color: #d4d4d4;"/>
+            </a>
+            <h1 class="text-4xl font-semibold ms-3"><i class="max-sm:hidden">Welcome back, </i>{{ userObj.username }}</h1>
+        </div>
+
+        <div class="mt-6">
+            <div class="flex items-center">
+                <h5 class="text-2xl font-semibold">Friends</h5>
+                <a href="/friends" class="text-indigo-500 hover:text-indigo-700 ms-auto font-semibold">View All <i class="bi bi-arrow-right"></i></a>
+            </div>
+            <div class="mt-1 max-w-[1200px] h-[130px] grid overflow-hidden w-full justify-items-center" style="grid-template-columns: repeat(auto-fill,minmax(100px,1fr));">
+                {% for i in range(12) %}
+                <a class="no-underline relative" href="/users/1/profile">
+                    <div class="w-[100px] h-full p-1">
+                        <div class="rounded-full w-full aspect-square shadow-md border-gray-300 border relative" style="background-color: #d4d4d4;">
+                            <img src="{{ url_for('thumbnails_roblox._headshot_avatar', _scheme='https', userId = 1, format = 'webp', x = 100, y = 100 ) }}" class="rounded-full w-full aspect-square drop-shadow-md"/>
+                            <div class = "absolute bottom-[5px] right-[5px] w-[20px] h-[20px] bg-green-500 rounded-full flex items-center justify-center">
+                                <i class="bi bi-controller text-white text-sm"></i>
+                            </div>
+                        </div>
+                        <h5 class="text-center text-xs font-semibold mt-1 truncate w-full">Shedletsky{{i}}</h5>
+                        <p class="text-center text-2xs text-gray-500 truncate w-full">Natural Disaster Survival</p>
+                    </div>
+                </a>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="mt-6">
+            <div class="flex items-center">
+                <h5 class="text-2xl font-semibold">Recently Played</h5>
+                <a href="/games" class="text-indigo-500 hover:text-indigo-700 ms-auto font-semibold">View All <i class="bi bi-arrow-right"></i></a>
+            </div>
+            <div class="mt-1 max-w-[1200px] h-[200px] grid overflow-hidden justify-items-center" style="grid-template-columns: repeat(auto-fill,minmax(150px,1fr));">
+                {% for i in range(8) %}
+                <a class="no-underline" href="/games/1/--">
+                    <div class="w-[150px] h-full p-1">
+                        <div class="rounded-md w-full bg-white shadow-md border-gray-300 border relative overflow-hidden">
+                            <div class="relative">
+                                <img src="https://cdn.syntax.eco/8b636b5b05fc3de2372db06ec15109cf74e7a5633a76e01dce522e80fbe1304c38653300537bef185242d094208ee6c5f4ef7a7b2667b574a0d92469495878d7" class="w-full aspect-square drop-shadow-md"/>
+                                <div class="absolute bottom-0 left-0 bg-gray-700 bg-opacity-75 p-1 rounded-tr w-fit">
+                                    <h5 class="text-2xs font-semibold text-white truncate w-full">2020</h5>
+                                </div>
+                            </div>
+                            <div class="p-1">
+                                <h4 class="text-start text-sm font-semibold truncate w-full">Natural Disaster Survival</h4>
+                                <p class="text-xs font-semibold text-gray-700 truncate"><i class="bi bi-people"></i> 0 Playing</p>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
